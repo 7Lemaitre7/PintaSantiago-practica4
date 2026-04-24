@@ -1,4 +1,4 @@
-# Dockerfile
+<img width="705" height="825" alt="image" src="https://github.com/user-attachments/assets/d34e2733-6880-4fb8-89b2-eee53491af49" /># Dockerfile
 Un Dockerfile es un archivo de texto plano que contiene una serie de instrucciones que Docker utiliza para construir una imagen de contenedor Docker. Este conjunto de instrucciones define cómo se debe configurar y construir una imagen de contenedor, incluyendo qué sistema operativo base usar, qué software instalar, qué archivos copiar en el contenedor y cómo configurar el entorno de ejecución.
  ![Dockerfile](img/relacion.PNG)
 
@@ -45,6 +45,7 @@ docker build -t <nombre imagen>:<tag> .
 ## Ejemplo
 ### Colocar las siguientes instrucciones en un Dockerfile, 
 ![Dockerfile](img/Dockerfile.PNG)
+<img width="498" height="274" alt="image" src="https://github.com/user-attachments/assets/e693381e-05d6-4c73-aa22-413775fde7f9" />
 
 - apachectl: Es el script de control para el servidor web Apache. Se utiliza para iniciar, detener y controlar el servidor web.
 - -D FOREGROUND: Esta opción le dice a Apache que se ejecute en primer plano. Por defecto, Apache se ejecuta como un servicio en segundo plano. Sin embargo, en un contenedor Docker, es preferible que el proceso principal (en este caso, Apache) se ejecute en primer plano para que Docker pueda monitorear el estado del proceso. Si Apache se ejecutara en segundo plano, Docker no podría saber si el servidor web está funcionando correctamente o no.
@@ -53,17 +54,34 @@ docker build -t <nombre imagen>:<tag> .
 ### Ejecutar el archivo Dockerfile y construir una imagen en la versión 1.0
 No olvides verificar en qué directorio se encuentra el archivo Dockerfile
 ```
-
+docker build -t mi-apache:1.0 .
 ```
-
+<img width="950" height="588" alt="image" src="https://github.com/user-attachments/assets/d4e82839-23e6-4b6b-93fd-fd3e19807cbf" />
+<img width="859" height="248" alt="image" src="https://github.com/user-attachments/assets/de4907f8-fe76-4c07-bbc3-e5cbc52df6d0" />
+<img width="1665" height="379" alt="image" src="https://github.com/user-attachments/assets/0c887879-3023-4539-80db-5c6d6c76ffa1" />
 **¿Cuántos pasos se han ejecutado?**
 # RESPONDER 
 
 ### Inspeccionar la imagen creada
+```
+docker inspect mi-apache:1.0
+```
+<img width="705" height="825" alt="image" src="https://github.com/user-attachments/assets/75a50819-7ab6-4c1f-ab00-4736672ea7ef" />
+
 # COMPLETAR CON UNA CAPTURA
 
 **Modificar el archivo index.html para incluir su nombre y luego crear una nueva versión de la imagen anterior**
+
+<img width="1919" height="319" alt="image" src="https://github.com/user-attachments/assets/3c0bb0f0-f210-44e2-9f8c-f66f457ae2b4" />
+
+```
+docker build -t mi-apache:2.0 .
+```
+<img width="1696" height="343" alt="image" src="https://github.com/user-attachments/assets/8e59cc9c-eb8f-4d29-a265-008d21c17a2c" />
+
 **¿Cuántos pasos se han ejecutado? ¿Observa algo diferente en la creación de la imagen**
+Se ejecutaron 4 pasos. Lo que observo de diferente es que en la primera imagen el primer paso es *FROM*, el segundo y tercero es *RUN* y el cuarto es *COPY*, mientras que en la nueva versión de la imagen el primer paso es *FROM*, el segundo y tercero es *CACHE RUN* y el cuarto es *COPY*. Indicando que en el paso dos y tres de la segunda imagen, se detecto que las instrucciones no cambiaron pero si el archivo html y por eso el cuarto paso *COPY* no se acompaña de *CACHE*.
+
 
 ## Mecanismo de caché
 Docker usa un mecanismo de caché cuando crea imágenes para acelerar el proceso de construcción y evitar la repetición de pasos que no han cambiado. Cada instrucción en un Dockerfile crea una capa en la imagen final. Docker intenta reutilizar las capas de una construcción anterior si no han cambiado, lo que reduce significativamente el tiempo de construcción.
@@ -75,24 +93,35 @@ Docker usa un mecanismo de caché cuando crea imágenes para acelerar el proceso
 
 ### Crear un contenedor a partir de las imagen creada, mapear todos los puertos
 ```
-
+docker run -d --name mi-web-pro -P mi-apache:1.0
 ```
+<img width="546" height="49" alt="image" src="https://github.com/user-attachments/assets/9c1bb31b-919b-4092-a003-55b2f8c3bc4e" />
 
 ### ¿Con que puerto host se está realizando el mapeo?
+Los puertos son 32768->80. Siendo el host el 32768.
+```
+docker ps
+```
+<img width="1018" height="73" alt="image" src="https://github.com/user-attachments/assets/b7ad45a2-e48b-460c-87e4-28ed8b3441c4" />
+
 # COMPLETAR CON LA RESPUESTA
 
 **¿Qué es una imagen huérfana?**
+Una imagen huérfana (o dangling) es una capa de imagen que ya no tiene relación con ninguna imagen etiquetada. Esto ocurre típicamente cuando se construye una nueva imagen con el mismo nombre y etiqueta que una anterior; la versión vieja pierde su nombre y aparece como <none>:<none> en la lista de imágenes, quedando "colgada" y ocupando espacio en disco innecesariamente.
+
 # COMPLETAR CON LA RESPUESTA
 
 ### Identificar imágenes huérfanas
 ```
 docker images -f "dangling=true"
 ```
+<img width="1897" height="428" alt="image" src="https://github.com/user-attachments/assets/6c937ef2-e950-41bd-a687-712e72c873bc" />
 
 ### Listar los IDS de las imágenes huérfanas
 ```
 docker images -f "dangling=true" -q
 ```
+<img width="459" height="32" alt="image" src="https://github.com/user-attachments/assets/894d2cf8-d786-41ac-bfdb-ba17926c98ff" />
 
 ### Eliminar imágenes huérfanas
 Este comando eliminará todas las imágenes que no estén asociadas a ningún contenedor en ejecución. Antes de ejecutarlo, asegúrate de revisar las imágenes que serán eliminadas para evitar la pérdida de imágenes importantes. 
@@ -106,7 +135,8 @@ docker build -t <nombre imagen>:<tag> -f <ruta y nombre del Dockerfile> .
 ```
 
 ## Por ejemplo
+```
 docker build -t imagen:1.0 -f Dockerfile-custom .
-
+```
 
 
