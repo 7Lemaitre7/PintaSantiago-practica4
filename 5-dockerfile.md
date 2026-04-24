@@ -1,4 +1,3 @@
-<img width="705" height="825" alt="image" src="https://github.com/user-attachments/assets/d34e2733-6880-4fb8-89b2-eee53491af49" /># Dockerfile
 Un Dockerfile es un archivo de texto plano que contiene una serie de instrucciones que Docker utiliza para construir una imagen de contenedor Docker. Este conjunto de instrucciones define cómo se debe configurar y construir una imagen de contenedor, incluyendo qué sistema operativo base usar, qué software instalar, qué archivos copiar en el contenedor y cómo configurar el entorno de ejecución.
  ![Dockerfile](img/relacion.PNG)
 
